@@ -90,25 +90,36 @@ Designed for reproducibility and modular execution.
 
 ## Core Technical Competencies
 
-**Programming:**  
+## Core Technical Competencies
+
+**Programming & Scripting**  
 ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
 ![Bash](https://img.shields.io/badge/Bash-121011?logo=gnu-bash&logoColor=white)
+![SQL](https://img.shields.io/badge/SQL-4479A1?logo=postgresql&logoColor=white)
 
-**Bioinformatics:**  
+**Bioinformatics**  
 ![Snakemake](https://img.shields.io/badge/Snakemake-3C8DBC?logo=snakemake&logoColor=white)
-![Biopython](https://img.shields.io/badge/Biopython-3776AB?logo=python&logoColor=white)
-![Samtools](https://img.shields.io/badge/Samtools-009688?logo=data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjZmZmIiB2aWV3Qm94PSIwIDAgMTIgMTIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3QgeD0iMSIgeT0iMSIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiByeD0iMSIvPjwvc3ZnPg==)
+![BWA](https://img.shields.io/badge/BWA-0288D1)
+![Samtools](https://img.shields.io/badge/Samtools-009688)
+![bcftools](https://img.shields.io/badge/bcftools-4CAF50)
+![FastQC](https://img.shields.io/badge/FastQC-1976D2)
+![MultiQC](https://img.shields.io/badge/MultiQC-6A1B9A)
 
-**Data Analysis & Visualization:**  
+**Data Analysis & Visualization**  
 ![Pandas](https://img.shields.io/badge/Pandas-150458?logo=pandas&logoColor=white)
 ![Matplotlib](https://img.shields.io/badge/Matplotlib-11557C?logo=plotly&logoColor=white)
 ![Seaborn](https://img.shields.io/badge/Seaborn-3776AB?logo=python&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?logo=scikit-learn&logoColor=white)
 
-**Cloud / Big Data:**  
+**Cloud & Big Data**  
 ![Apache Spark](https://img.shields.io/badge/Apache%20Spark-E25A1C?logo=apachespark&logoColor=white)
 ![Google Cloud](https://img.shields.io/badge/Google%20Cloud-4285F4?logo=googlecloud&logoColor=white)
 ![AWS](https://img.shields.io/badge/AWS-FF9900?logo=amazonaws&logoColor=white)
 
+**Reproducibility & Environments**  
+![Conda](https://img.shields.io/badge/Conda-44A833?logo=anaconda&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white)
 
 ---
 
@@ -133,8 +144,9 @@ question *“why?”* into one coherent story.
 
 ## **Cel repozytorium**
 
-To portfolio prezentuje praktyczne projekty z zakresu bioinformatyki, analizy danych genetycznych i uczenia maszynowego.  
-Każdy projekt opiera się na rzeczywistych danych biologicznych (DNA, SNP, geny, mutacje) i pokazuje umiejętność:
+To portfolio prezentuje praktyczne projekty z zakresu bioinformatyki, analizy
+danych genetycznych i uczenia maszynowego. Każdy projekt opiera się na rzeczywistych danych biologicznych (DNA, SNP, geny, mutacje) i pokazuje
+umiejętność:
 
 - pracy z dużymi zbiorami danych (Spark, Cloud),
 - analizy danych biologicznych (Pandas, Biopython, scikit-learn),
@@ -146,8 +158,10 @@ Każdy projekt opiera się na rzeczywistych danych biologicznych (DNA, SNP, geny
 
 ### 1. **Analiza danych genetycznych w SQL**  
 `project_sql/`  
+
 Analiza danych pacjentów i wyników testów genetycznych przy użyciu zapytań SQL.  
-Skupiono się na identyfikacji testów z wieloma pacjentami i analizie częstości wariantów w różnych typach testów (SNP Array, NGS, WES, WGS).  
+Skupiono się na identyfikacji testów z wieloma pacjentami i analizie częstości
+wariantów w różnych typach testów (SNP Array, NGS, WES, WGS).  
 
 **Technologie:** SQL, relacyjne bazy danych  
 **Plik:** `pd4657-DATAB-projekt.sql`
@@ -156,17 +170,21 @@ Skupiono się na identyfikacji testów z wieloma pacjentami i analizie częstoś
 
 ### 2. **Pipeline analizy NGS w Snakemake**  
 `project_snakemake/`  
-Zautomatyzowany workflow przetwarzania danych NGS (FASTQ → QC → Alignment → Variant Calling) z wykorzystaniem Snakemake i środowisk Conda.  
+
+Zautomatyzowany workflow przetwarzania danych NGS (FASTQ → QC → Alignment →
+Variant Calling) z wykorzystaniem Snakemake i środowisk Conda.  
 
 **Technologie:** Snakemake, Conda, BWA, Samtools, FastQC, MultiQC  
 **Zawartość:** `Snakefile`, `config.yaml`, `envs/`, `data/`, `results/`
 
 ---
 
-### 3. **Analiza wariantów genetycznych w Spark (1000 Genomes Project)**  
+### 3. **Analiza wariantów genetycznych w Apache Spark (1000 Genomes Project)**  
 `project_spark_snp_analysis/`  
-Projekt wykorzystujący Apache Spark do analizy dużych danych genetycznych (plik VCF z projektu 1000 Genomes).  
-Celem było policzenie SNP, identyfikacja wariantów w genie CFH i wizualizacja rozkładu wariantów.  
+
+Projekt wykorzystujący Apache Spark do analizy dużych danych genetycznych (plik
+VCF z projektu 1000 Genomes). Celem było policzenie SNP, identyfikacja
+wariantów w genie CFH i wizualizacja rozkładu wariantów.  
 
 **Technologie:** PySpark, Biopython, Pandas, Matplotlib  
 **Środowisko:** Google Cloud VM (8 vCPU, 62 GB RAM)  
@@ -175,19 +193,23 @@ Celem było policzenie SNP, identyfikacja wariantów w genie CFH i wizualizacja 
 ---
 
 ### 4. **Podstawowa analiza sekwencji DNA (Python)**  
-`dna_basic_analysis/`  
-Skrypt analizujący sekwencje DNA w formacie FASTA.  
-Zlicza częstość nukleotydów, oblicza zawartość GC, generuje wykresy procentowej zawartości A, C, G, T oraz GC.  
+`dna_basic_analysis/`
+
+Skrypt analizujący sekwencje DNA w formacie FASTA. Zlicza częstość nukleotydów,
+oblicza zawartość GC, generuje wykresy procentowej zawartości A, C, G, T oraz
+GC.  
 
 **Technologie:** Python, Biopython, Pandas, Matplotlib  
 **Plik:** `basic_dna_analysis.py`  
-**Wynik:** `wyniki.csv` + wykresy słupkowe  
+**Wynik:** `wyniki.csv` i wykresy słupkowe  
 
 ---
 
 ### 5. **Genomic Workflow (Bash)**  
 `bash_workflow_scripts/`  
-Zestaw skryptów Bash automatyzujących analizę danych NGS dla *E. coli K-12* od przycinania FASTQ po wykrywanie wariantów.  
+
+Zestaw skryptów Bash automatyzujących analizę danych NGS dla *E. coli K-12* od
+przycinania FASTQ po wykrywanie wariantów.  
 
 **Etapy:**
 - Trymowanie odczytów (`Trimmomatic`)
@@ -203,20 +225,44 @@ Zestaw skryptów Bash automatyzujących analizę danych NGS dla *E. coli K-12* o
 
 ## Kluczowe kompetencje techniczne
 
-| Obszar | Technologie / Narzędzia |
-|--------|--------------------------|
-| **Programowanie** | Python (Pandas, Matplotlib, Biopython), Bash |
-| **Big Data / Chmura** | Apache Spark, Google Cloud, AWS |
-| **Analiza biologiczna** | Snakemake, FastQC, BWA, Samtools, bcftools, Conda |
-| **Bazy danych** | SQL |
-| **Wizualizacja danych** | Matplotlib, Seaborn |
+## Core Technical Competencies
+
+**Programming & Scripting**  
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
+![Bash](https://img.shields.io/badge/Bash-121011?logo=gnu-bash&logoColor=white)
+![SQL](https://img.shields.io/badge/SQL-4479A1?logo=postgresql&logoColor=white)
+
+**Bioinformatics**  
+![Snakemake](https://img.shields.io/badge/Snakemake-3C8DBC?logo=snakemake&logoColor=white)
+![BWA](https://img.shields.io/badge/BWA-0288D1)
+![Samtools](https://img.shields.io/badge/Samtools-009688)
+![bcftools](https://img.shields.io/badge/bcftools-4CAF50)
+![FastQC](https://img.shields.io/badge/FastQC-1976D2)
+![MultiQC](https://img.shields.io/badge/MultiQC-6A1B9A)
+
+**Data Analysis & Visualization**  
+![Pandas](https://img.shields.io/badge/Pandas-150458?logo=pandas&logoColor=white)
+![Matplotlib](https://img.shields.io/badge/Matplotlib-11557C?logo=plotly&logoColor=white)
+![Seaborn](https://img.shields.io/badge/Seaborn-3776AB?logo=python&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?logo=scikit-learn&logoColor=white)
+
+**Cloud & Big Data**  
+![Apache Spark](https://img.shields.io/badge/Apache%20Spark-E25A1C?logo=apachespark&logoColor=white)
+![Google Cloud](https://img.shields.io/badge/Google%20Cloud-4285F4?logo=googlecloud&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-FF9900?logo=amazonaws&logoColor=white)
+
+**Reproducibility & Environments**  
+![Conda](https://img.shields.io/badge/Conda-44A833?logo=anaconda&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white)
 
 ---
 
 ## O autorce
 
-**Gosia** - z wykształcenia mgr inż. Biotechnologii (2016), ukończyłam Studia Podyplomowe z Bioinformatyki (PJATK, 2025), aby zdobyć kluczowe umiejętności, które pomogą mi w przebranżowieniu się.  
-Uwielbiam łączyć kod, dane i pytanie *„dlaczego?”* w jedną spójną historię.
+**Gosia** - mgr inż. Biotechnologii (2016), absolwentka Studiów Podyplomowych
+z Bioinformatyki (PJATK, 2025). Łącze dane, kod i pytanie *„dlaczego?”* w jedną
+spójną historię.
 
 📍 Obecnie: Europa, Polska  
 📫 Kontakt: **[magorzata.bujak@gmail.com](mailto:magorzata.bujak@gmail.com)**
