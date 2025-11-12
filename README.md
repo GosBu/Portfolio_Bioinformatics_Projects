@@ -95,7 +95,7 @@ A collection of Bash scripts automating NGS data analysis for *E. coli K-12*, fr
 
 ## About the Author
 
-**Gosia** — MSc in Biotechnology (2016) and Postgraduate Studies in Bioinformatics (PJATK, 2025).  
+**Gosia** - MSc in Biotechnology (2016) and Postgraduate Studies in Bioinformatics (PJATK, 2025).  
 I’m passionate about connecting code, data, and the question *“why?”* into one coherent story.
 
 📍 Currently based in Europe, Poland  
@@ -195,7 +195,7 @@ Zestaw skryptów Bash automatyzujących analizę danych NGS dla *E. coli K-12* o
 
 ## O autorce
 
-**Gosia** — z wykształcenia mgr inż. Biotechnologii (2016), ukończyłam Studia Podyplomowe z Bioinformatyki (PJATK, 2025), aby zdobyć kluczowe umiejętności, które pomogą mi w przebranżowieniu się.  
+**Gosia** - z wykształcenia mgr inż. Biotechnologii (2016), ukończyłam Studia Podyplomowe z Bioinformatyki (PJATK, 2025), aby zdobyć kluczowe umiejętności, które pomogą mi w przebranżowieniu się.  
 Uwielbiam łączyć kod, dane i pytanie *„dlaczego?”* w jedną spójną historię.
 
 📍 Obecnie: Europa, Polska  
