@@ -28,7 +28,7 @@ identifying tests with multiple patients and analysing the frequency of variants
 across different test types (SNP Array, NGS, WES, WGS).
 
 **Technologies:** SQL, Relational Databases  
-**File:** `project_sql`
+**File:** `project_sql.md`
 
 ---
 
@@ -39,11 +39,23 @@ An automated workflow for processing NGS data (FASTQ → QC → Alignment → Va
 Calling) using Snakemake and Conda environments.
 
 **Technologies:** Snakemake, Conda, BWA, Samtools, FastQC, MultiQC  
-**Contents:** `Snakefile`, `config.yaml`, `envs/`, `data/`, `results/`
+**Contents:** `Snakefile`, `config.yaml`, `envs/`, `data/`, `results/`, `README.md`, `dag_full.png`, `report.html`
 
 ---
 
-### 3. **Genetic Variant Analysis using Apache Spark (1000 Genomes Project)**
+### 3. **NGS QC & Trimming Pipeline in Nextflow**
+`project_nextflow/`
+
+An automated workflow for quality control and trimming of NGS data
+(FASTQ → QC → MultiQC → Trimming) using Nextflow and configurable parameters.
+The workflow uses channels, params objects, and log.info for process tracking.
+
+**Technologies:** Nextflow, FASTQC, MultiQC, Trimmomatic
+**Contents:** `PRODATA_7.nf`, `config.yaml`, `timeline.html`, `report.html`, `trace.txt`
+
+---
+
+### 4. **Genetic Variant Analysis using Apache Spark (1000 Genomes Project)**
 `project_spark_snp_analysis/`  
 
 A project utilising Apache Spark for large-scale genetic data analysis (VCF
@@ -56,7 +68,7 @@ variants in the **CFH** gene, and visualise the variant distribution.
 
 ---
 
-### 4. **Basic DNA Sequence Analysis (Python)**
+### 5. **Basic DNA Sequence Analysis (Python)**
 `dna_basic_analysis/`  
 
 A Python script for analysing DNA sequences in FASTA format. Counts nucleotide
@@ -65,11 +77,11 @@ composition (A, C, G, T, GC).
 
 **Technologies:** Python, Biopython, Pandas, Matplotlib  
 **File:** `basic_dna_analysis.py`  
-**Output:** `wyniki.csv` + bar charts
+**Contents:** `basic_dna_analysis-code_description.txt`, `clean_sequences.fasta`, `ncbi_reference_sequences.txt`, `sequences.txt`
 
 ---
 
-### 5. **Genomic Workflow (Bash)**
+### 6. **Genomic Workflow (Bash)**
 `bash_workflow_scripts/`  
 
 A collection of Bash scripts automating NGS data analysis for *E. coli K-12*,
@@ -77,6 +89,7 @@ from read trimming to variant detection.
 Designed for reproducibility and modular execution.
 
 **Workflow Steps:**
+- Download reads (`fastq-dump`)
 - Read trimming (`Trimmomatic`)
 - Mapping (`BWA`)
 - Sorting and indexing (`Samtools`)
@@ -84,11 +97,9 @@ Designed for reproducibility and modular execution.
 - Variant calling (`bcftools`)
 
 **Technologies:** Bash, BWA, Samtools, bcftools, Conda  
-**Files:** `trymowanie.sh`, `mapowanie.sh`, `sortowanie_indeksowanie.sh`, `usuwanie_duplikatow.sh`, `analiza_wariantow.sh`
+**Files:** `NGS_reads_download.sh`, `1_trimmed.sh`, `2_mapping.sh`, `3_sorting_&iand_indexing.sh`, `4_duplicate_removal.sh`, `5_variant_calling.sh`
 
 ---
-
-## Core Technical Competencies
 
 ## Core Technical Competencies
 
@@ -164,7 +175,7 @@ Skupiono się na identyfikacji testów z wieloma pacjentami i analizie częstoś
 wariantów w różnych typach testów (SNP Array, NGS, WES, WGS).  
 
 **Technologie:** SQL, relacyjne bazy danych  
-**Plik:** `pd4657-DATAB-projekt.sql`
+**Plik:** `project_sql.md`
 
 ---
 
@@ -175,11 +186,23 @@ Zautomatyzowany workflow przetwarzania danych NGS (FASTQ → QC → Alignment �
 Variant Calling) z wykorzystaniem Snakemake i środowisk Conda.  
 
 **Technologie:** Snakemake, Conda, BWA, Samtools, FastQC, MultiQC  
-**Zawartość:** `Snakefile`, `config.yaml`, `envs/`, `data/`, `results/`
+**Zawartość:** `Snakefile`, `config.yaml`, `envs/`, `data/`, `results/`, `README.md`, `dag_full.png`, `report.html`
 
 ---
 
-### 3. **Analiza wariantów genetycznych w Apache Spark (1000 Genomes Project)**  
+### 3. **Pipeline QC i trymowania NGS w Nextflow**
+`project_nextflow/`
+
+Zautomatyzowany workflow do kontroli jakości i trymowania danych NGS
+(FASTQ → QC → MultiQC → Trimming) z wykorzystaniem Nextflow i parametrów konfiguracyjnych.
+Workflow używa kanałów, obiektów params oraz log.info do monitorowania przebiegu procesów.
+
+**Technologie:** Nextflow, FASTQC, MultiQC, Trimmomatic
+**Zawartość:** `PRODATA_7.nf`, `config.yaml`, `timeline.html`, `report.html`, `trace.txt`
+
+---
+
+### 4. **Analiza wariantów genetycznych w Apache Spark (1000 Genomes Project)**  
 `project_spark_snp_analysis/`  
 
 Projekt wykorzystujący Apache Spark do analizy dużych danych genetycznych (plik
@@ -192,7 +215,7 @@ wariantów w genie CFH i wizualizacja rozkładu wariantów.
 
 ---
 
-### 4. **Podstawowa analiza sekwencji DNA (Python)**  
+### 5. **Podstawowa analiza sekwencji DNA (Python)**  
 `dna_basic_analysis/`
 
 Skrypt analizujący sekwencje DNA w formacie FASTA. Zlicza częstość nukleotydów,
@@ -201,17 +224,18 @@ GC.
 
 **Technologie:** Python, Biopython, Pandas, Matplotlib  
 **Plik:** `basic_dna_analysis.py`  
-**Wynik:** `wyniki.csv` i wykresy słupkowe  
+**Wynik:** `basic_dna_analysis-code_description.txt`, `clean_sequences.fasta`, `ncbi_reference_sequences.txt`, `sequences.txt`
 
 ---
 
-### 5. **Genomic Workflow (Bash)**  
+### 6. **Genomic Workflow (Bash)**  
 `bash_workflow_scripts/`  
 
 Zestaw skryptów Bash automatyzujących analizę danych NGS dla *E. coli K-12* od
 przycinania FASTQ po wykrywanie wariantów.  
 
 **Etapy:**
+- Pobieranie odczytów (`fastq-dump`)
 - Trymowanie odczytów (`Trimmomatic`)
 - Mapowanie (`BWA`)
 - Sortowanie i indeksowanie (`Samtools`)
@@ -219,20 +243,18 @@ przycinania FASTQ po wykrywanie wariantów.
 - Analiza wariantów (`bcftools`)
 
 **Technologie:** Bash, BWA, Samtools, bcftools, Conda  
-**Pliki:** `trymowanie.sh`, `mapowanie.sh`, `sortowanie_indeksowanie.sh`, `usuwanie_duplikatow.sh`, `analiza_wariantow.sh`
+**Pliki:** `NGS_reads_download.sh`, `1_trimmed.sh`, `2_mapping.sh`, `3_sorting_&iand_indexing.sh`, `4_duplicate_removal.sh`, `5_variant_calling.sh`
 
 ---
 
 ## Kluczowe kompetencje techniczne
 
-## Core Technical Competencies
-
-**Programming & Scripting**  
+**Programowanie i Skrypty**  
 ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
 ![Bash](https://img.shields.io/badge/Bash-121011?logo=gnu-bash&logoColor=white)
 ![SQL](https://img.shields.io/badge/SQL-4479A1?logo=postgresql&logoColor=white)
 
-**Bioinformatics**  
+**Bioinformatyka**  
 ![Snakemake](https://img.shields.io/badge/Snakemake-3C8DBC?logo=snakemake&logoColor=white)
 ![BWA](https://img.shields.io/badge/BWA-0288D1)
 ![Samtools](https://img.shields.io/badge/Samtools-009688)
@@ -240,18 +262,18 @@ przycinania FASTQ po wykrywanie wariantów.
 ![FastQC](https://img.shields.io/badge/FastQC-1976D2)
 ![MultiQC](https://img.shields.io/badge/MultiQC-6A1B9A)
 
-**Data Analysis & Visualization**  
+**Analiza i Wizualizacja Danych**  
 ![Pandas](https://img.shields.io/badge/Pandas-150458?logo=pandas&logoColor=white)
 ![Matplotlib](https://img.shields.io/badge/Matplotlib-11557C?logo=plotly&logoColor=white)
 ![Seaborn](https://img.shields.io/badge/Seaborn-3776AB?logo=python&logoColor=white)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?logo=scikit-learn&logoColor=white)
 
-**Cloud & Big Data**  
+**Chmury i Big Data**  
 ![Apache Spark](https://img.shields.io/badge/Apache%20Spark-E25A1C?logo=apachespark&logoColor=white)
 ![Google Cloud](https://img.shields.io/badge/Google%20Cloud-4285F4?logo=googlecloud&logoColor=white)
 ![AWS](https://img.shields.io/badge/AWS-FF9900?logo=amazonaws&logoColor=white)
 
-**Reproducibility & Environments**  
+**RPotwarzalność i Środowiska**  
 ![Conda](https://img.shields.io/badge/Conda-44A833?logo=anaconda&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white)
