@@ -1,0 +1,3 @@
+Module	Section	Sample Name	Source
+FastQC	all_sections	SRR23099991_1	/Users/mago/Library/CloudStorage/OneDrive-Osobisty/24_25_PJATK_Bioinformatyka/PJATK_Zarzadzanie_procesami_w_analizie_danych/PRODATA_Nextflow/PRODATA_9/work/d5/30bbc6c995987bdc8f90ad4f9ff441/SRR23099991_1_fastqc.zip
+FastQC	all_sections	SRR23099991_2	/Users/mago/Library/CloudStorage/OneDrive-Osobisty/24_25_PJATK_Bioinformatyka/PJATK_Zarzadzanie_procesami_w_analizie_danych/PRODATA_Nextflow/PRODATA_9/work/d5/30bbc6c995987bdc8f90ad4f9ff441/SRR23099991_2_fastqc.zip

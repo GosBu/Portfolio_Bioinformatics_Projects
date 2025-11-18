@@ -1,0 +1,108 @@
+
+# Projekt koncowy_Linux_pd4657
+
+# 1. Przygotowanie środowiska pracy
+
+# Utwórz nowy katalog projekt_bioinfo w katalogu domowym
+mkdir projekt_bioinfo
+
+# Utwórz nową grupę użytkowników o nazwie bio_grupa i przypisz swojego użytkownika do tej grupy
+sudo groupadd bio_grupa
+sudo usermood -aG bio_grupa vboxuser_mago
+
+# Zmień grupę przypisaną do katalogu projekt_bioinfo na bio_grupa
+sudo chgrp bio_grupa /home/vboxuser_mago/projekt_bioinfo
+
+# Ustaw uprawnienia katalogu, aby tylko właściciel i członkowie grupy bio_grupa mieli dostęp do katalogu, a inni użytkownicy byli z niego wykluczeni
+chmod o-rwx
+
+wczesniej komenda ls -l spradzilam uprawnienia do katalogu, user i gropu maja pelen dostep (rwx)
+
+
+# 2.Zarządzanie plikami
+
+# Pobierz do katalogu domowego sekwencje genomowe w formacie FASTA ortologów genu insuliny (INS) dla czterech różnych organizmów
+Pobrane z przegladarki
+
+# Rozpakuj archiwum i przenieś pliki z sekwencjami do katalogu projekt_bioinfo
+unzip /home/vboxuser_mago/Downloads/"Gene ID_100533403_PIN.zip" -d /home/vboxuser_mago/Downloads/"Gene ID_100533403"
+
+(analogicznie rozpakowane i zapisane w katalogach, ktore wskazalam uzywajac "-d")
+
+Teraz dla uproszczenia przechodze do katalogu "Downloads"(komenda: cd Downloads) i zmieniam nazwy plikow .fna dopisujac ID genu (komenda: mv "/home/vboxuser_mago/Downloads/Gene _ID_100533403_PIN/ncbi_dataset/data/gene.fna" "/home/vboxuser_mago/Downloads/Gene _ID_100533403_PIN/ncbi_dataset/data/gene_ID_100533403.fna") - analogicznie dla pozostalych plikow
+
+Przenosze wszystki epliki zakonczone .fna do katalogu projekt_bioinfo (komenda: find -type f -name "*.fna" -exec mv {} /home/vboxuser_mago/projekt_bioinfo/ \;)
+
+Sprawdzam czy sie udalo (komenda: ls /home/vboxuser_mago/projekt_bioinfo/)
+
+# 3. Wyszukiwanie informacji w internecie
+
+# Spróbuj wyszukać informacje i pobrać sekwencje z zadania 3 bezpośrednio z poziomu linii poleceń terminala np. komendą wget lub też innym pakietem. Wykonaj te zadanie i podmień pliki w katalogu projekt_bioinfo
+wget "https://www.ncbi.nlm.nih.gov/nuccore/NW_004798128.1?report=fasta&log$=seqview&format=text&from=102992&to=178711" -o "Gene_ID_100533403.fasta"
+Uzywam komendy wget i linku, ktory bezposrednio otwiera w przegladarce sekwencje nt w formacie FASTA i nie zapisuje mi pliku z sekwencja, wiec wykorzytuje ponizsze rozwiazanie
+
+esearch -db nucleotide -query "NW_004798128.1" | efetch -format fasta > "/home/vboxuser_mago/projekt_bioinfo/gene_ID_100533403.fasta" && mv -f "/home/vboxuser_mago/projekt_bioinfo/gene_ID_100533403.fasta" "/home/vboxuser_mago/projekt_bioinfo/Gene ID_100533403.fna"
+
+
+# 4. Przetwarzanie plików tekstowych
+
+# Odpowiednim poleceniem (np. sed) zmień nagłówki (pierwsza linia zaczynająca się od >) plików FASTA na krótsze np. >INS_human, >INS_pig itp
+sed -i 's/^>.*$/>INS_dog/' gene_ID_483665.fasta
+analogicznie dla 
+>INS_rat dla gene_ID_24484.fasta
+>INS_fish dla gene_ID_100150352.fasta
+>INS_snail dla gene_ID_100533403.fasta
+
+# Połącz pobrane sekwencje w jeden plik o nazwie INS_multifasta.fa
+cat gene_ID_100150352.fasta  gene_ID_100533403.fasta  gene_ID_24484.fasta  gene_ID_483665.fasta > INS_multifasta.fa
+
+
+# 5. Wyszukiwanie motywów
+
+# Odpowiednim poleceniem wyszukaj sekwencje zawierające określony motyw („AGCT”) w pliku INS_multifasta.fa, a następnie zapisz wynik wyszukiwania do nowego pliku motyw_AGCT.txt
+grep "AGCT" INS_multifasta.fa > motyw_AGCT.txt
+
+
+# 6. Zliczanie liczby wystąpień motywu ‘AGCT’
+
+# Odpowiednim poleceniem zlicz wystąpienia motywu ‘AGCT’ jako fragmentu sekwencji w pliku motyw_AGCT.txt
+grep -o "AGCT" motyw_AGCT.txt | wc -l
+
+
+# 7. Automatyzacja zadań
+
+# Napisz skrypt Bash (pod nazwą script.sh), który w sposób automatyczny na jednym z genów wykona następujące kroki:
+# - pobierze sekwencję z poziomu linii poleceń, 
+esearch -db nucleotide -query "NC_037331.1" | efetch -format fasta > NC_037331.1.fasta
+
+# - zmieni nagłówek na krótszy,
+sed -i 's/^>.*$/>INS_cow/' NC_037331.1.fasta
+
+# - wyszuka motyw “AGCT” i zapisze wynik wyszukiwania do nowego pliku,
+grep $MOTYW $PLIK > $NOWY_PLIK
+
+# - wyświetli na końcu komunikat o zakończeniu zadania i ilości wystąpień motywu “AGCT”.
+echo -e "Skrpt zakonczyl dzialanie.\nIlosc wystapien motywu AGCT: $WYNIK"
+
+
+# 8. Tworzenie dowiązań
+
+# Utwórz dowiązanie symboliczne do katalogu projekt_bioinfo oraz twarde dowiązanie do pliku INS_multifasta.fa
+dowiazanie symboliczne: ln -s /home/vboxuser_mago/projekt_bioinfo /home/vboxuser_mago/symlink_projekt_bioinfo
+dowiazanie twarde: ln INS_multifasta.fa hardlink_INS_multifasta.fa
+
+
+# 9. Archiwizacja plików
+
+# Utwórz archiwum skompresowane (np. w formacie .tar.gz) dla katalogu projekt_bioinfo, który zawiera aktualnie wszystkie pliki związane z projektem. Następnie zapisz archiwum w swoim katalogu domowym
+tar -cvzf archiwum_final_project.tar.gz /home/vboxuser_mago/projekt_bioinfo
+mv /home/vboxuser_mago/projekt_bioinfo/archiwum_final_project.tar.gz /home/vboxuser_mago/
+
+
+#10. Zdalny dostęp i transfer plików
+
+# Spróbuj przesłać wyniki analizy z poprzedniego zadania na zdalny serwer PJATK (Link) za pomocą scp, z następującymi parametrami:
+
+Adres serwera: msh.pjwstk.edu.pl
+Nazwa użytkownika: proszę użyć swojego loginu
+Katalog docelowy na serwerze: /home/PJWSTK/twój_login

@@ -1,0 +1,13 @@
+task_id	hash	native_id	name	status	exit	submit	duration	realtime	%cpu	peak_rss	peak_vmem	rchar	wchar
+6	e0/0d744a	17598	FASTQC (fastqc)	COMPLETED	0	2025-07-15 23:28:27.645	9.8s	9.7s	-	-	-	-	-
+9	99/533ff5	17717	MULTIQC (multiqc)	COMPLETED	0	2025-07-15 23:28:37.495	1.8s	1.7s	-	-	-	-	-
+1	47/3201f8	17559	FASTQC (fastqc)	COMPLETED	0	2025-07-15 23:28:27.625	11.8s	11.7s	-	-	-	-	-
+10	05/7575a3	17762	MULTIQC (multiqc)	COMPLETED	0	2025-07-15 23:28:39.410	1.8s	1.7s	-	-	-	-	-
+3	b4/e1ba1f	17590	FASTQC (fastqc)	COMPLETED	0	2025-07-15 23:28:27.640	13.8s	13.7s	-	-	-	-	-
+11	a7/76e3ad	17800	MULTIQC (multiqc)	COMPLETED	0	2025-07-15 23:28:41.421	1.4s	1.4s	-	-	-	-	-
+4	17/172922	17565	FASTQC (fastqc)	COMPLETED	0	2025-07-15 23:28:27.631	16.7s	16.7s	-	-	-	-	-
+8	31/76374a	17545	TRIMMED (trimmed)	COMPLETED	0	2025-07-15 23:28:27.616	18.4s	18.3s	-	-	-	-	-
+12	d5/30bbc6	17852	MULTIQC (multiqc)	COMPLETED	0	2025-07-15 23:28:44.390	1.8s	1.7s	-	-	-	-	-
+2	35/9a1694	17573	TRIMMED (trimmed)	COMPLETED	0	2025-07-15 23:28:27.635	22.9s	22.8s	-	-	-	-	-
+5	fe/629091	17548	TRIMMED (trimmed)	COMPLETED	0	2025-07-15 23:28:27.621	26.7s	26.7s	-	-	-	-	-
+7	f6/d5dad2	17541	TRIMMED (trimmed)	COMPLETED	0	2025-07-15 23:28:27.607	33.7s	33.7s	-	-	-	-	-

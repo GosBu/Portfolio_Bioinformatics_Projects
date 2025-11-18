@@ -1,0 +1,144 @@
+<<<<<<< HEAD
+# Aktywacja środowiska
+conda activate SRA_tools
+
+# Pobranie plików fastq
+fastq-dump SRR1536581 --split-3 --skip-technical --gzip
+
+# Analiza jakości odczytów programem FastQC
+# Tworzenie katalogu na raporty
+mkdir final_project_quality_reports
+
+# Uruchomienie FastQC na pliku fastq z użyciem 4 wątków
+fastqc -t 4 -o final_project_quality_reports/ *.fastq.gz
+
+
+# Usuwanie sekwencji niskiej jakości programem Trimmomatic (automatyzacja za pomocą skryptu w Bash)
+
+#!/bin/bash
+
+source activate trimed
+
+# Lista próbek
+samples=("SRR1536581")
+
+
+# Liczba rdzeni
+THREADS=4
+
+# Parametry programu Trimmomatic
+PARAMS="LEADING:8 TRAILING:8 SLIDINGWINDOW:5:20 MINLEN:40"
+
+# Pętla po wszystkich próbkach
+for sample in "${samples[@]}"
+do
+echo "Przycinam próbkę: $sample"
+
+trimmomatic SE -phred33 -threads $THREADS \
+${sample}.fastq.gz \
+${sample}_trimmed.fastq.gz \
+$PARAMS
+echo "Zakończono: $sample"
+done
+
+
+# Raport jakości z programu FastQC po przycięciu
+fastqc -t 4 -o final_project_quality_reports/ *trimmed.fastq.gz
+
+
+# Usuwanie adapterów programem Cutadapt
+cutadapt -a AGATCGGAAGAGC -o SRR1536581_cutadapt.fastq.gz SRR1536581_trimmed.fastq.gz
+
+# Raport jakości z programu FastQC po usuwaniu adapterów
+fastqc -t 4 -o final_project_quality_reports/ *cutadapt.fastq.gz
+
+
+# Tworzenie folderu do zapisania wyników z programu MultiQC
+mkdir multiqc_raports
+
+# Raport zbiorczy wygenerowany programem MultiQC
+multiqc -o final_project_quality_reports/multiqc_raports -f -v final_project_quality_reports
+
+
+# Mapowanie przyciętych odczytów przy użyciu BWA MEM
+
+# Aktywacja środowiska
+conda activate mapping
+
+# Utworzenie folderu genome_index 
+mkdir -p genome_index
+
+# Rozpakowanie genomu referencyjego
+gunzip hg38.fa.gz
+
+# Indeksowanie genomu referencyjnego
+bwa index hg38.fa		# za mało RAM, więc ściągnęłam gotowy indeks: Homo_sapiens_assembly38.fasta
+
+# Mapowanie przyciętych odczytów SE (single-end)
+bwa mem -t 4 "/mnt/c/Users/magor/25_PJATK_Genomika/NGS_final_project/genome_index/Homo_sapiens_assembly38.fasta" "SRR1536581_cutadapt.fastq.gz" > "Human_rep.sam"    # laptop nie uciągnął analizy, więc przeszłam na Galaxy
+
+# Sortowanie pliku BAM według koordynatów
+samtools sort Galaxy3_human_mapped_reads.bam -o Human_rep.sorted.bam
+
+# Nadanie indeksu BAM (uzyskasz plik typu .bai)
+samtools index Human_rep.sorted.bam
+
+# Statystyki mapowania
+samtools flagstat Human_rep.sorted.bam > mapping_stats.txt
+
+
+# Usuń duplikaty
+samtools markdup -r Human_rep.sorted.bam Human_rep.sorted_dedup.bam
+
+# Nadaj indeks posortowanemu plikowi BAM (uzyskasz plik typu .bai)
+samtools index Human_rep.sorted_dedup.bam
+
+
+# Nadanie indeksu genomowi ref
+samtools faidx Homo_sapiens_assembly38.fasta
+
+# Wyświetlenie wariantów w programie IGV
+igv_hidpi
+
+
+# Wykonaj identyfikację wariantów
+#Aktywacja środowiska
+conda activate BCF_tools
+
+# Oszacowanie stopnia pokrycia programem BCFtools
+bcftools mpileup -O b -o raw_1.bcf -f "/mnt/c/Users/magor/25_PJATK_Genomika/NGS_final_project_human/genome_index/Homo_sapiens_assembly38.fasta" -q 20 -Q 30 Human_rep.sorted_dedup.bam
+
+# Identyfikacja wariantów pojedynczych nukleotydów (SNV) za pomocą BCFtools
+bcftools call -m -v --ploidy 1 -o final_project_bcf_variants_1.vcf raw_1.bcf
+
+
+# Statystyki
+bcftools stats final_project_bcf_variants_1.vcf > _final_project_bcf_variant_stats.txt
+
+less _final_project_bcf_variant_stats.txt
+
+# Wyświetlenie info o SNP, InDel
+bcftools view -v snps final_project_bcf_variants_1.vcf | grep -v "^#" | wc -l
+
+bcftools view -v indels final_project_bcf_variants_1.vcf | grep -v "^#" | wc -l
+
+
+#  Filtrowanie wariantów 
+Wyfiltruj warianty według określonych kryteriów (np. minimalna jakość, głębokość pokrycia)
+bcftools filter -s LOWQUAL -e '%QUAL<20 || DP<10' final_project_bcf_variants_1.vcf -Ov -o filtered_variants.vcf
+
+# Porównanie liczb wariantów przed i po filtrowaniu
+bcftools stats filtered_variants.vcf > variant_stats.txt
+
+bcftools view -v snps filtered_variants.vcf | grep -v "^#" | wc -l
+
+bcftools view -v indels filtered_variants.vcf | grep -v "^#" | wc -l
+
+
+# Adnotacja wariantów programem SnpEff na Galxy
+Wykorzystany plik: filtered_variants.vcf
+=======
+version https://git-lfs.github.com/spec/v1
+oid sha256:c60708ade2d7ebca5608ad9a965f1f0eaf62ed351685ebd1c57151957f73fbee
+size 4806
+>>>>>>> 19c17f50dbac4626be301eed232aa73d63db393a

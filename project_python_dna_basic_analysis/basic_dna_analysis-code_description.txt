@@ -1,0 +1,319 @@
+Basic_dna_analysis - opis kodu 
+
+# Otwórz plik z sekwencjami DNA
+
+"""
+Moduł SeqIO importuję z biblioteki Biopython, żeby móc go użyć w kodzie. Wszystkie biblioteki trzeba "wywołać" czyli zaimportować (pobrać) za nim zacznie się ich korzystać. Biblioteki to zbiór funkcji, metod, klas, które są dedykowane do danych typów danych np. Biopython ma cały wachlarz możliwości do pracy z danymi biologicznymi jak sekwencje DNA, RNA czy białek. 
+"""
+
+from Bio import SeqIO
+
+for seq_records in SeqIO.parse("sekwencje.txt", "fasta"):
+    print("\nID:", seq_records.id)
+    print("Sekwencja:", seq_records.seq)
+    print("Długosć sekwencji:", len(seq_records))
+
+try:
+    with open("sekwencje.txt", "r") as plik:
+        zawartosc = plik.read()
+        print(zawartosc)
+except FileNotFoundError:
+    print("Nie znaleziono pliku z sekwencją DNA")
+
+"""
+Aby otworzyć plik tekstowy z sekwencjami w formacie FASTA używam funkcji SeqIO.parse(), która pozwala odczytać plik z przygotowanymi sekwencjami w formacie FASTA bez utraty ich "właściwości", ponieważ zwraca tak zwane obiekty (sec.record). Przechowują one informacje o sekwencjach z pliku, takie jak: nr ID - który jest przypisany do sekwencji w formacie FASTA (jest to unikalny numer, jak nr PESEL dla człowieka, same sekwencje i ich długość.
+Użyję print, aby wszystkie te informacje wyświetlić na konsoli (ekranie). Print pozwala podejrzeć co robi, jaki daje wynik wybrany fragment kodu czy funkcja. A to np. pozwala się upewnić, że wynik jest taki jak zamierzony.
+
+Wykorzystuję pętle for, aby iterowała (przechodziła) po każdej sekwencji w pliku i zastosowała print dla każdej z nich. 
+
+Aby mieć pewność, że na komputerze jest plik, z którego odczytuję sekwencję napisałam wyłapanie i obsługę błędu - czyli jeśli próbuję przy pomocy kodu odczytać plik, którego nie mam na komputerze, to pojawi się na ekranie wiadomość (którą sama napisałam: tutaj "Nie znaleziono pliku z sekwencją DNA"). Dzięki temu od razu będę wiedzieć, gdzie szukać problemu przy uruchomieniu skryptu.
+"""
+
+
+# Zapisanie sekwencji z pliku jako lista
+lista_sekwencji = []
+
+for seq_records in SeqIO.parse("sekwencje.txt", "fasta"):
+    lista_sekwencji.append(seq_records.seq)
+
+"""
+Zapisuję sekwencje z pliku do pustej listy. Dzięki pętli for przechodzę po każdej sekwencji (a dokładnie po każdym obiekcie seq_records, który zawiera ciąg znaków, czyli sekwencję) w parsowanym pliku z sekwencjami i dodaję każdą do pustej listy dzięki funkcji .append(). Append to metoda działająca na listach - pozwala dodać dany element na koniec listy.
+Zapisanie sekwencji w liście jest mi potrzebne do dalszego kroku. Do każdego elementu listy mogę się dostać podając indeks (indeksy to przypisanie do każdego elementu (u mnie do każdej sekwencji) liczby od 0 rosnąco co 1. Mogę też dzięki funkcji len sprawdzić ile elementów, czyli sekwencji mam w liście (sprawdzam jej długość). 
+"""
+
+# Przypisanie sekwencji do oddzielnych zmiennych
+dna_seq1 = lista_sekwencji[0]
+dna_seq_ostatnia = lista_sekwencji[-1]
+
+"""
+Wybierając sekwencje po jej indeksie mogę ją przypisać do zmiennej (np. seq1, seq2 itd.). A przypisanie do zmiennej pozwala mi potem te dane wykorzystać w kodzie. Mogę też pokazać co zmienna przechowuje jeśli wpiszę ją w komendę print(). Ale przypisanie zabiera miejsce w pamięci, więc jeśli zmienna nie jest potrzebna, lepiej jej nie tworzyć.
+Lista to fajny typ danych w Pythonie, bo można łatwo na nim operować (dodać, usunąć, wybrać elementy) - będą go jeszcze niejednokrotnie wykorzystywać w tym kodzie.
+"""
+
+# Pobranie sekwencji użytkownika po ID z NCBI
+from Bio import Entrez
+
+mail_uzytkownika = input("Podaj swojego maila: ").strip()
+
+if mail_uzytkownika == "":
+    print("Nie podałes maila. Podanie maila jest wymagane przez NCBI. Proszę podaj mail: ")
+
+else:
+    print(f"\nDziękuję za podanie maila: {mail_uzytkownika}")
+    ID_sekwencji = input("Podaj ID z NCBI sekwencji DNA, którą chcesz dodać do pliku: ").strip()
+
+"""
+Pobieram moduł Entrez z biblioteki Biopython. Ten moduł pozwoli mi pobrać dowolną sekwencję z bazy danych, konkretnie z NCBI, a jeszcze dokładniej z bazy sekwencji nukleotydów. Funkcja efetch z Entrez pozwala wyszukać sekwencję (np. DNA jak u mnie) po numerze ID. Ten numer jest unikalny dla każdej sekwencji. 
+
+Chcę, aby sekwencję podał mi użytkownik, więc wykorzystam funkcję input, aby wyświetlić na ekranie mój komunikat, dla użytkownika - czyli poproszę go o podanie id sekwencji z NCBI, którą chciałby pobrać i dodać do pliku.
+Oddzielnie poproszę go o podanie maila, ponieważ NCBI to zaleca, chcą móc się w razie co skontaktować z użytkownikiem.
+
+Napisałam warunek, który sprawdza czy mail został podany, a nie jest pustym stringiem (string to ciąg znaków w cudzysłowie).
+Jeśli mail nie będzie podany, to wyświetli się komunikat. Użyłam metody na stringu, która usuwa białe znaki na początku i końcu stringu. A także przekazałam i zapisałam w zmiennej podaną sekwencję, aby móc ją wykorzystać w kodzie.
+"""
+
+# Pobranie sekwencji DNA podanej przez użytkownika
+try:
+    handle = Entrez.efetch(db="nucleotide", id=ID_sekwencji, rettype="fasta", retmode="text")
+    record = SeqIO.read(handle, "fasta")
+
+except Exception as error:
+    print(f"Nie udało się pobrać sekwencji {error}")
+    exit()
+
+print(f"\nID: {record.id}" )
+print(f"\nSekwencja od użytkownika:\n{record.seq[:200]}")
+
+"""
+Napisałam również wyjątek, aby sprawdzić czy udało się pobrać sekwencję podaną przez użytkownika.
+Wynik pobrania, czyli sekwencję w formacie FASTA (to jest zaznaczone w kodzie "rettype") zapisuję do zmiennej record, aby móc ją dalej wykorzystać. SeqIO.read pozwala odczytać pojedynczy rekord (w przeciwieństwie do parse).
+Zaznaczam w print, żeby wyświetliło maksymalnie 200 nukleotydów sekwencji - na  wypadek, gdyby była długa, żeby nie zajęła dużo miejsca  na konsoli. Zresztą ważny jest nagłówek, po nim sprawdzę czy została pobrana właściwa sekwencja.
+"""
+
+# Zapisanie podanej sekwencji do pliku
+with open("sekwencje.txt", "a") as plik:
+    SeqIO.write(record, plik, "fasta")
+"""
+Kolejny krok, to zapisanie sekwencji użytkownika do istniejącego pliku (a gdyby plik nie istniał, to tryb append ("a") utworzy mi plik. Tutaj dopisuje sekwencję użytkownika do pliku już istniejącego. To ważne, żeby użyć tu append, bo samo write ("w) nadpisało sekwencję do pliku, czyli zapisuje, ale nie zachowuje już istniejącej treści, jeśli taka w pliku była.
+W tym miejscu wykorzystuję zmienną record, która "wnosi" co zapisać do pliku oraz określam format zapisu sekwencji - FASTA. 
+"""
+
+# Funkcja do zliczenia nukleotydów
+def liczenie_nukleotydow(sekwencja):
+    liczenie = {
+        "A": sekwencja.count("A"),
+        "C": sekwencja.count("C"),
+        "G": sekwencja.count("G"),
+        "T": sekwencja.count("T")
+    }
+    return liczenie
+
+"""
+Napisałam funkcję do policzenia wystąpień poszczególnych nukleotydów. Funkcję użyję później przy tworzeniu wykresów. W funkcji wykorzystuję metodę count - która zlicza wszystkie wystąpienia każdego z czterech nukleotydów. To metoda działająca na listach i stingach.
+"""
+
+# Wywołanie funkcji dla każdej sekwencji z pliku
+for i, seq in enumerate(lista_sekwencji):
+    print(f"\nPrzetwarzam sekwencję: {i+1}: {seq}")
+    
+    policzone_nukleotydy = liczenie_nukleotydow(seq)
+    print("\nZliczone nukleotydy: ")
+    
+    for nukleotyd, liczba in policzone_nukleotydy.items():
+        print(f"{nukleotyd}: {liczba}")
+
+"""
+Wywołuję funkcję w pętli for z enumerate, aby iterować po każdej sekwencji i aby otrzymać indeks jak i sekwencję. Dzięki enumerate od razu zobaczę indeks (nr) ostatniej iterowanej sekwencji. Znów przy użyciu print wyświetlam wynik funkcji na ekranie. Dzięki formatowaniu "f-string" i {} wyświetli się każdy nukleotyd z funkcji i ilość jego wystąpień. Tutaj funkcja count działa na liście.
+"""
+
+# Zliczanie par GC     
+    ilosc_par_gc = seq.count("GC") 
+    print("\nIlosć par GC: ", ilosc_par_gc)
+    
+# Pierwsze wystąpienie pary GC
+lokalizacja_sekwencji_gc = seq.find("GC")   
+print("\nIndeks pierwszego wystąpienia pary GC: ", lokalizacja_sekwencji_gc)
+
+""" 
+Dalej, wykorzystuję metodę count do policzenia wystąpień stringu GC. Więc ta sama metoda wykorzystana na dwóch typach danych. Dodatkowo sprawdzam i wyświetlam na ekranie lokalizację pierwszej pracy GC- używam metody find(), która działa na stringach i pokazuje pierwsze wystąpienie - wyświetla nr indeksu, ale co ważne indeksu pierwszej litery ze stringu (czyli tutaj G).
+"""
+
+# Wyswietlenie informacji o sekwencjach z pliku
+for i, seq_records in enumerate(SeqIO.parse("sekwencje.txt", "fasta")):
+    print("")
+    print(f"Numer sekwencji: {i+1}")
+    print("\nID:", seq_records.id)
+    print("\nSekwencja:", seq_records.seq)
+    print("\nDługosć sekwencji:", len(seq_records))
+
+"""
+Następnie przy użyciu print wyświetlam kilka informaci o sekwencjach z pliku.
+"""
+
+# Tworzenie słownika z sekwencjami z pliku, aby uzyskać ID sekwencji z pliku
+slownik_sekwencji = {}
+
+for seq_records in SeqIO.parse("sekwencje.txt", "fasta"):
+    slownik_sekwencji[seq_records.id] = seq_records.seq
+    print(slownik_sekwencji.keys())
+    print(len(slownik_sekwencji))
+
+"""
+Tworzę słownik, którzy jest typem danych, gdzie każda wartość przypisana jest do klucza. U mnie klucze to id sekwencji. Potrzebuję je wyświetlić na ekranie (print) w tym celu przyda się iterowanie po kluczach - i dostanę listę z id sekwencji z  pliku. Co najlepsze, klucze w słowniku nie mogą być zdublowane, więc niezależnie ile sekwencji w pliku jest zdublowane dostanę listę unikalnych kluczy. A że w pliku mam zdublowane sekwencje, to ważne, że klucze nie będą się powtarzać.
+"""
+
+# Pobranie sekwencji referencyjnych z NCBI
+Entrez.email = input("Podaj swojego maila: ").strip()
+
+ids = slownik_sekwencji.keys()
+
+handle = Entrez.efetch(db="nucleotide", id=ids, rettype="fasta", retmode="text")
+records = SeqIO.parse(handle, "fasta")
+
+
+"""
+Listę z id sekwencji zapisuję do zmiennej ids, aby ją wykorzystać w pobieraniu sekwencji z NCBI. Aby zrobić użyję znowu moduły Entrez i kodu jak przy wyszukaniu i pobraniu sekwencji podanej przez użytkownika. A po co te sekwencje? W moim pliku mam zdublowane i nieprawidłowe sekwencję, ktorych będę się chciała pozbyć - takie czyszczenie pliku z duplikatów i błędów. Aby pozbyć się błędnych sekwencji potrzebuję wzorca. Moim wzorcem będą oryginalne sekwencje z NCBI - użyję ich jako sekwencji referencyjncyh (wzorcowych). Dzięki moim id, które są unikalne, pobiorę tylko sekwencję obecne w moim pliku (te poprawne i błędę mają to samo ID w pliku - zmieniałam tylko nukleotydy, nie nazwy. Porównam sekwencję z pliku z sekwencjami referencyjnymi. Ale najpier usunę dzdublowane sekwencje, aby było mnie rekordów do porównania. 
+"""
+
+# Zapisanie sekwencji do pliku FASTA
+with open("sekwencje_referencyjne_ncbi.txt", "w") as plik:
+    SeqIO.write(records, plik, "fasta")
+
+"""
+Za nim przejdę do czyszczenia danych, zapisuję moje pobrane sekwencję do pliku. Wykorzystam moduł seqIO i funkcję write, aby zapisać sekwencje w formacie FASTA do nowego pliku (tu używam write "w", nie append, bo nie dopisuję do pliku, tylko zapisuję w nowym.
+"""
+
+# Usuwanie duplikatów
+plik_wyjsciowy_sekwencje = SeqIO.parse("sekwencje.txt", "fasta")
+zbior_sekwencji = set()
+lista_sekwencji_bez_duplikatow = []
+
+for record in plik_wyjsciowy_sekwencje:
+    if str(record.seq) not in zbior_sekwencji:
+        lista_sekwencji_bez_duplikatow.append(record)
+        zbior_sekwencji.add(str(record.seq))
+
+
+"""
+Aby pozbyć się duplikatów wykorzystam typ danych zbiór. Wykorzystam ich "naturalną właściwość", zbiory przechowują wyłącznie unikalne (niepowtarzające się) elementy. Czyli w utworzonym zbiorze będę miała tylko pojedyncze sekwencje - ważne nie używam to tego id sekwencji, a same sekwencje (bo id mam takie same w dobrych i zmodyfikowanych sekwencjach).
+
+Tworzę pusty zbiór, do którego będę dodawać sekwencje z pliku (z pierwszego pliku, na razie nie myślimy o pliku z sekwencjami referencyjnymi). Tworzę również pustą listę na te same niezdublowane sekwencję, ponieważ potem będę ją potrzebować. 
+
+Aby utworzyć zbiór z unikalnymi sekwencjami wykorzystam konstrukcję if not in w pętli for (pętla for, która jest świetna do przechodzenia po elementach). Warunek, który napisałam dba, żeby do zbioru i listy trafiały tylko sekwencje, które nie są jeszcze w zbiorze. Więc jeśli będę miała już tam sekwencję np. "AGTCGG" to nie doda drugiej takiej (w tym kroku nie ma znaczenia czy sekwencja jest poprawna czy nie, chodzi tylko, żeby zmniejszyć ilość sekwencji do porównania z referencyjnymi. 
+Ważne, w zmiennej zapisuję odczytanie pliku (odczytuję go przez SeqIO.parse - ponieważ mam kilkanaście sekwencji a nie jedną - wtedy użyłabym .read()). Robię to, bo zależy mi na poprawnym odczytaniu sekwencji w formacie FASTA, w tym zachowaniu wszystkich elementów, np. id - nie chce tracić tego obiektu. 
+Używam tu metody append() dla listy i add() dla zbioru - pozwalają dodać kolejny element odpowiednio do listy i zbioru. Używam str(), aby zapisać każdą sekwencję jako string i móc wykorzystać proste porównanie ciągu znaków. Ponieważ z pliku nie dostałam stringa a obiekt record.seq,który jest obiektem - to struktura bardziej złożona niż zwykły string. 
+"""
+
+# Porównanie sekwencji z pliku z sekwencjami referencyjnymi
+plik_sekwencje_referencyjne = SeqIO.parse("sekwencje_referencyjne_ncbi.txt", "fasta")
+zbior_sekwencje_referencyjne = set(str(record.seq) for record in plik_sekwencje_referencyjne)
+
+lista_poprawne_sekwencje = []
+lista_zmodyfikowane_sekwencje = []
+
+for record in lista_sekwencji_bez_duplikatow:
+    if str(record.seq) in zbior_sekwencje_referencyjne:
+        lista_poprawne_sekwencje.append(record)
+    else:
+        lista_zmodyfikowane_sekwencje.append(record)
+
+"""
+Zaczynam od parsownia pliku z sekwencjami referencyjnymi, przy pomocy pętli for przechodzę przez każdy obiekt (sekwencję w pliku), zamieniam ją na string i dodaję do zbioru (podobnie jak z plikiem z oryginalnymi sekwencjami w poprzednim kroku).
+
+Tworzę dwie puste listy, aby zapisać wyniki porównania - do jednej sekwencje poprawne i oddzielnie te niepoprawne, których chciałam się pozbyć.
+
+Pętla for iteruje w liście (to ta lista z wcześniejszego kroku, która zawiera sekwewncja bez tych zdublowanych) i sprawdza po kolei, czy dana sekwencja z listy jest w zbiorze sekwencji referencyjnych (do tego nada sięśiwetnie konstrukcja warunkowa if, else). Jeśli tak (if), to dodaje ją do nowej listy z poprawnymi sekwencjami. Jeśli nie (else), to dopisuję do listy z sekwencjami zmodyfikowanymi - zawierającymi błędne nukleotydy. Czyli to lista z tym z czego chciałam oczyścić plik.
+Ta konstrukcja if, else działa tak: piszę warunke do spełenienia, jeśli jest spełniony, to piszę co ma nastąpić, jeśli nie jest spełniony, to w części else piszę co ma się zadziać. 
+"""
+
+# Zapisanie wyników do pliku
+with open("sekwencje_czyste.fasta", "w") as plik:
+    SeqIO.write(lista_poprawne_sekwencje, plik, "fasta")
+
+"""
+I tak oczyszczone dane - pojedyncze sekwencje, bez błędnych nukleotydów zapisuję w nowym pliku. Oczywiście dalej w formacie FASTA, a żeby to zrobić dobrze, używam niezmiennie moduł SeqIO.
+"""
+
+
+# Funkcja do policzenia par GC
+def liczenie_par_gc(sekwencja):
+    return sekwencja.count("GC")  
+
+"""
+Tworzę funkcję do zliczenia par GC. To co był wcześniej zapisuję w formie funkcji, w której wykorzystuję metodę count().
+"""
+
+# Utworzenie słownika i DataFrame
+import pandas as pd
+
+# Utworzenie danych do DataFrame
+sekwencje = []
+ids = []
+dlugosci = []
+motyw_gc = []
+nukleotydy = []
+
+for seq in SeqIO.parse("sekwencje_czyste.fasta", "fasta"):
+    seq_str = str(seq.seq)
+    
+    sekwencje.append(seq_str)
+    ids.append(seq.id)
+    dlugosci.append(len(seq_str))
+    motyw_gc.append(liczenie_par_gc(seq_str))
+    nukleotydy.append(liczenie_nukleotydow(seq_str))
+    
+df = pd.DataFrame({
+    "sekwencja": sekwencje,   
+    "ID": ids,
+    "dlugosc": dlugosci,
+    "motyw_gc": motyw_gc,
+    "zliczone_nt": nukleotydy
+})
+
+print(df)
+
+"""
+Pobieram bibliotekę Pandas, aby móc stworzyć DataFrame - to struktura danych, która zapisuje dane w "tabelach" i mogę działać na kolumnach i wierszach. Mogę też wyciągnąć łatwo daną kolumnę i tylko ją przedstawić na wykresie.
+
+W DataFrame chce mieć kilka danych dotyczących oczyszczonych sekwencji. Otwieram pliki i każdy obiekt przechowujący sekwencję zapisuję jako string i dodaję do odpowiednich pustych list, które utworzyłam chwilę wcześniej. Do listy mogę łatwo dodać elementy (tu stringi) przez funkcję append().
+
+Następnie tak przygotowane dane zapisuje w formie DataFrame, zapisuję je w formie słownika, który jest jednym z typów danych, który można przetworzyć na DataFrame. Nazywam klucze w słowniku i przypisuje do nich wartości, którymi są odpowiednie listy.
+"""
+
+# Histogram: wykres przedstawiający długosć sekwencji
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+plt.figure(figsize=(10, 6))
+sns.histplot(df["dlugosc"], kde=True, bins=18, color="purple")
+plt.title("Histogram rozkładu długosci sekwencji DNA")
+plt.xlabel("Długość sekwencji")
+plt.ylabel("Liczba sekwencji")
+plt.grid(True)
+plt.show()
+
+# Wykres słupkowy: wizualizacja wyników zliczania wysp GC
+plt.figure(figsize=(10,6))
+sns.boxplot(x=df["ID"], y=df["motyw_gc"])
+plt.xlabel("ID sekwencji")
+plt.ylabel("Liczba wystąpień GC")
+plt.title("Wykres ilosci wystąpień GC")
+plt.xticks(rotation=90)
+plt.show()
+
+# Wykres słupkowy: wizualizacja wystąpień poszczególnych nukleotydów
+nukleotydy = ["A", "C", "G", "T"]
+
+for nukleotyd in nukleotydy:
+    ilosci_nukleotydow = [nukleotyd_data[nukleotyd] for nukleotyd_data in zliczone_nukleotydy_df]
+    plt.figure(figsize=(10, 6))
+    plt.bar(df.index, ilosci_nukleotydow, label=f"Nukleotyd {nukleotyd}")
+    plt.title(f"Ilość nukleotydów {nukleotyd} w sekwencjach DNA")
+    plt.xlabel("ID sekwencji")
+    plt.ylabel("Ilość")
+    plt.show()
+
+"""
+Wybrałam 3 informacje i przedstawiłam je na dwóch typach wykresów. Aby przedstawić dane używam bibliotek: Matplot i Seaborn
+Określam rozmiar wykresu, typ wykresu (histplot, bar - odpowiednio histogram i wykres słupkowy), tytuł wykresu, opis osi x i y, dodaję siatkę (grid). Aby wyświetlić wykresy trzeba dodać .show() na końcu.
+"""
