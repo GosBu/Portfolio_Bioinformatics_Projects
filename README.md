@@ -28,7 +28,7 @@ identifying tests with multiple patients and analysing the frequency of variants
 across different test types (SNP Array, NGS, WES, WGS).
 
 **Technologies:** SQL, Relational Databases  
-**File:** `project_sql.md`
+**Contents:** `project_sql.md`
 
 ---
 
@@ -39,7 +39,8 @@ An automated workflow for processing NGS data (FASTQ → QC → Alignment → Va
 Calling) using Snakemake and Conda environments.
 
 **Technologies:** Snakemake, Conda, BWA, Samtools, FastQC, MultiQC  
-**Contents:** `Snakefile`, `config.yaml`, `envs/`, `data/`, `results/`, `README.md`, `dag_full.png`, `report.html`
+**Contents:** `Snakefile`, `config.yaml`, `envs/`, `data/`, `results/`, `README.md`,
+`dag_full.png`, `report.html`
 
 ---
 
@@ -51,7 +52,7 @@ An automated workflow for quality control and trimming of NGS data
 The workflow uses channels, params objects, and log.info for process tracking.
 
 **Technologies:** Nextflow, FASTQC, MultiQC, Trimmomatic
-**Contents:** `PRODATA_7.nf`, `config.yaml`, `timeline.html`, `report.html`, `trace.txt`
+**Contents:** `PRODATA_7.nf`, `timeline.html`, `report.html`, `trace.txt`, `results/`
 
 ---
 
@@ -65,24 +66,32 @@ variants in the **CFH** gene, and visualise the variant distribution.
 **Technologies:** PySpark, Biopython, Pandas, Matplotlib  
 **Environment:** Google Cloud VM (8 vCPU, 62 GB RAM)  
 **Results:** SNP distribution histogram, CFH gene analysis
+**Contents:** `SNP_chr1_CFH_Spark_GoogleCloud`, `SNP_chr1_CFH_Spark_GoogleCloud`,
+`Zał.1_Klastry_Projekt_Liczba_wariantów_6468094`.
+`Zał.2_Klastry_Projekt_Całkowita_liczba_SNP_chrom_1`,
+`Zał.3_Klastry_Projekt_Liczba_SNP_w_genie_CFH`,
+`Zał.5_Klastry_Projekt_ściągnięcie_archiwum`,
+`Zał.6_Klastry_Projekt_Zrzut_ekranu_Przepustowość`,
+`Zał.7_Klastry_Projekt_Zrzut_ekranu_Wykorzystanie_miejsca_na_dysku`,
+`Zał.8_Klastry_Projekt_Zrzut_ekranu_Wykorzystanie_procesora`
 
 ---
 
 ### 5. **Basic DNA Sequence Analysis (Python)**
-`dna_basic_analysis/`  
+`project_python_dna_basic_analysis/`  
 
 A Python script for analysing DNA sequences in FASTA format. Counts nucleotide
 frequencies, calculates GC content, and generates bar plots of nucleotide
 composition (A, C, G, T, GC).
 
-**Technologies:** Python, Biopython, Pandas, Matplotlib  
-**File:** `basic_dna_analysis.py`  
-**Contents:** `basic_dna_analysis-code_description.txt`, `clean_sequences.fasta`, `ncbi_reference_sequences.txt`, `sequences.txt`
+**Technologies:** Python, Biopython, Pandas, Matplotlib
+**Contents:** `basic_dna_analysis.py`, `basic_dna_analysis-code_description.txt`,
+`clean_sequences.fasta`, `ncbi_reference_sequences.txt`, `sequences.txt`
 
 ---
 
 ### 6. **Genomic Workflow (Bash)**
-`bash_workflow_scripts/`  
+`project_bash_workflow_scripts/`  
 
 A collection of Bash scripts automating NGS data analysis for *E. coli K-12*,
 from read trimming to variant detection.
@@ -97,7 +106,69 @@ Designed for reproducibility and modular execution.
 - Variant calling (`bcftools`)
 
 **Technologies:** Bash, BWA, Samtools, bcftools, Conda  
-**Files:** `NGS_reads_download.sh`, `1_trimmed.sh`, `2_mapping.sh`, `3_sorting_&iand_indexing.sh`, `4_duplicate_removal.sh`, `5_variant_calling.sh`
+**Contents:** `NGS_reads_download.sh`, `1_trimmed.sh`, `2_mapping.sh`,
+`3_sorting_&iand_indexing.sh`, `4_duplicate_removal.sh`, `5_variant_calling.sh`
+
+---
+
+### 7. **ML_mutation_classifier**
+`project_ML_mutation_classifier/`
+
+A project aimed at creating a classification model to predict whether a given
+mutation in a DNA sequence is pathogenic. Focused on genetic sequences
+associated with hereditary diseases.
+
+**Goal:** Build a model to classify DNA mutations as pathogenic or benign.
+**Technologies:** Python, scikit-learn, Pandas, NumPy, Matplotlib
+**Results:** Model performance metrics (accuracy, precision, recall), visualisation
+of mutation effects
+**Contents:** `mutation_classifier_cross_validation.py`, `mutation_classifier.py`,
+`mutation_classifier_interpretacja_wynikow.md`
+
+---
+
+### 8. **NGS Data Analysis**
+`project_NGS_Human_Variants/`
+
+A project demonstrating skills acquired in the course Bioinformatics in
+Genomics and Transcriptomics. The goal is to perform a complete NGS data
+analysis workflow, from raw read quality control to downstream analysis.
+
+**Goal:** Showcase a full NGS workflow, including QC, processing, mapping, and
+specific genomic or transcriptomic analyses.
+**Technologies:** Bash, Python, R, FastQC, MultiQC, Trimmomatic, Cutadapt,
+BWA/STAR, Samtools, IGV, Matplotlib, ggplot2
+**Contents:** `NGS_final_project_dokumentacja.pdf`, `NGS_final_project_dokumentacja.Rmd`,
+`NGS_final_project_full_code.txt`, `NGS_pipeline.sh`
+
+---
+
+### 9. **Bioinformatic FASTA Pipeline (Bash)**
+`project_linux/`
+
+A project demonstrating practical proficiency in Linux CLI and bioinformatics
+tools. Confirms ability to automate tasks using Bash scripts and build
+repeatable, secure analytical workflows for genomic data—essential for
+IT/Data Science roles.
+
+**Goal:** Set up working environment, manage genomic files (Insulin gene orthologs),
+process data, format FASTA sequences, and run automated analysis via CLI.
+**Technologies:** Bash, Linux CLI, AWK, sed, grep
+**Contents:** `README.md`, `linux_download_repo.sh`,
+`bioinformatyczny_pipeline_bash_obróbka_sekwencji_FASTA.txt`
+
+---
+
+### 10. **Data Analysis in R**
+`project_R`
+
+A project demonstrating practical proficiency in R programming and data
+analysis. Confirms ability to perform a complete data workflow, from
+import and cleaning to exploration, statistical analysis, visualisation, and
+reporting—showcasing both technical accuracy and analytical insight.
+
+**Technologies:** R, tidyverse, ggplot2, RMarkdown
+**Contents:** `Analiza_Danych_Genomowych_R.pdf`, `Analiza_Danych_Genomowych_R.Rmd`
 
 ---
 
