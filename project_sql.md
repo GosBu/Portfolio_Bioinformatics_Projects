@@ -1,4 +1,4 @@
-# pd4657-DATAB-projekt
+# projekt_SQL
 ## Wyniki zapytań SQL
 
 ### Zapytanie 2: Testy z więcej niż jednym pacjentem
