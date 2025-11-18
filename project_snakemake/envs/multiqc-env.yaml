@@ -1,0 +1,8 @@
+name: multiqc-env
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - multiqc
+  - python=3.10  # lub wersja zgodna z resztą projektu

@@ -1,0 +1,173 @@
+configfile: "config.yaml"
+SAMPLES = config["samples"]
+READS = config["reads"]
+
+
+rule all:
+    input:
+        # FastQC ZIP i HTML dla każdej próbki i każdego odczytu
+        expand("results/quality_reports/{sample}_{read}_fastqc.zip", sample=SAMPLES, read=READS),
+        expand("results/quality_reports/{sample}_{read}_fastqc.html", sample=SAMPLES, read=READS),
+
+        # MultiQC raport zbiorczy
+        "results/quality_reports_multiqc/multiqc_report.html",
+
+        # BWA indeks genomu (prefiks covid_index)
+        "results/genome_index/covid_index.bwt",
+
+        # Posortowane i zaindeksowane BAM dla każdej próbki
+        expand("results/bam/{sample}_mapped_sorted.bam", sample=SAMPLES),
+        expand("results/bam/{sample}_mapped_sorted.bam.bai", sample=SAMPLES),
+
+        # Pokrycie genomu
+        expand("results/coverage/{sample}_coverage.txt", sample=SAMPLES),
+
+        # Variant Calling VCF
+        expand("results/vcf/{sample}.vcf", sample=SAMPLES)
+
+
+rule multiqc:
+    input:
+        expand("results/quality_reports/{sample}_{read}_fastqc.zip", sample=SAMPLES, read=READS)
+    output:
+        "results/quality_reports_multiqc/multiqc_report.html"
+    conda:
+        "envs/multiqc-env.yaml"
+    shell:
+        """
+        mkdir -p results/quality_reports_multiqc
+        multiqc results/quality_reports -o results/quality_reports_multiqc
+        """
+
+
+rule fastqc:
+    input:
+        "data/raw/{sample}_{read}.fastq.gz"
+    output:
+        file_zip="results/quality_reports/{sample}_{read}_fastqc.zip",
+        file_html="results/quality_reports/{sample}_{read}_fastqc.html"
+    threads: 4
+    log:
+        "results/quality_reports/{sample}_{read}.fastqc.log"
+    conda:
+        "envs/fastqc-env.yaml"
+    shell:
+        """
+        fastqc -t {threads} --outdir results/quality_reports {input} 2> {log}
+        """
+
+
+rule trimmomatic:
+    input:
+        read1="data/raw/{sample}_1.fastq.gz",
+        read2="data/raw/{sample}_2.fastq.gz"
+    output:
+        read_1_trimmed="results/{sample}_1_trimmed.fastq.gz",
+        read_2_trimmed="results/{sample}_2_trimmed.fastq.gz"
+    threads: 4
+    conda:
+        "envs/trimmomatic-env.yaml"
+    shell:
+        """
+        trimmomatic PE -threads {threads} -phred33 \
+            {input.read1} {input.read2} \
+            {output.read_1_trimmed} /dev/null \
+            {output.read_2_trimmed} /dev/null \
+            LEADING:20 TRAILING:20 SLIDINGWINDOW:5:20 MINLEN:40
+        """
+    
+
+
+rule bwa_index_genome_ref:
+    input:
+        "data/raw/sequence_NC_045512.2.fasta"
+    output:
+        "results/genome_index/covid_index.bwt"
+    log:
+        "results/logs/bwa_index.log"
+    conda:
+        "envs/bwa-env.yaml"
+    shell:
+        """
+        mkdir -p results/genome_index
+        bwa index -p results/genome_index/covid_index {input} > {log} 2>&1
+        """
+
+
+rule bwa_mem_do_bam:
+    input:
+        read1="results/{sample}_1_trimmed.fastq.gz",
+        read2="results/{sample}_2_trimmed.fastq.gz",
+        ref="results/genome_index/covid_index.bwt"
+    output:
+        "results/bam/{sample}_mapped.bam"
+    threads: 4
+    log:
+        "results/logs/bwa/{sample}.log"
+    conda:
+        "envs/bwa-env.yaml"
+    shell:
+        """
+        mkdir -p results/bam
+        bwa mem -t {threads} results/genome_index/covid_index {input.read1} {input.read2} | \
+        samtools view -Sb -@ {threads} > {output} 2> {log}
+        """
+
+
+
+rule samtools_sort_index:
+    input:
+        bam="results/bam/{sample}_mapped.bam"
+    output:
+        bam_sorted="results/bam/{sample}_mapped_sorted.bam",
+        bai="results/bam/{sample}_mapped_sorted.bam.bai"
+    threads: 4
+    log:
+        "results/logs/samtools/{sample}.log"
+    conda:
+        "envs/samtools-env.yaml"
+    shell:
+        """
+        samtools sort -@ {threads} -o {output.bam_sorted} {input.bam}
+        samtools index {output.bam_sorted} > {log} 2>&1
+        """
+
+
+
+rule genome_coverage:
+    input:
+        bam="results/bam/{sample}_mapped_sorted.bam"
+    output:
+        "results/coverage/{sample}_coverage.txt"
+    threads: 2
+    log:
+        "results/logs/coverage/{sample}.log"
+    conda:
+        "envs/samtools-env.yaml"
+    shell:
+        """
+        mkdir -p results/coverage
+        samtools depth {input.bam} > {output} 2> {log}
+        """
+
+
+rule variant_calling:
+    input:
+        bam="results/bam/{sample}_mapped_sorted.bam",
+        ref="data/raw/sequence_NC_045512.2.fasta"
+    output:
+        "results/vcf/{sample}.vcf"
+    threads: 4
+    log:
+        "results/logs/variants/{sample}.log"
+    conda: 
+        "envs/bcftools-env.yaml"
+    shell:
+        """
+        mkdir -p results/vcf
+        bcftools mpileup -Ou -f {input.ref} {input.bam} | \
+        bcftools call -mv -Ov -o {output} 2> {log}
+        """
+
+
+
